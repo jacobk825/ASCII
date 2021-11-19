@@ -5,6 +5,7 @@ import PIL
 from PIL import Image, ImageDraw, ImageGrab
 import os 
 from colorutils import Color
+import time
 
 def hex_to_rgb(value):
     value = value.lstrip('#')
@@ -38,13 +39,15 @@ class Paint(object):
         self.opacity_button.set(self.DEFAULT_OPACITY)
 
         self.choose_size_label = Label(self.root, text='Thickness').grid(row=1, column=2)
-        self.choose_size_button = Scale(self.root, from_=1, to=20, orient=HORIZONTAL)
+        self.choose_size_button = Scale(self.root, from_=1, to=30, orient=HORIZONTAL)
         self.choose_size_button.grid(row=0, column=2)
         self.choose_size_button.set(self.DEFAULT_CHOOSE_SIZE)
 
-        self.color_button = Button(self.root, text='Save and Quit', command=self.save).grid(row=0, column=3)
+        self.save_as_button = Button(self.root, text='Save As', command=self.save_as).grid(row=0, column=3)
 
-        self.color_button = Button(self.root, text='Quit', command=self.quit).grid(row=0, column=4)
+        self.save_quit_button = Button(self.root, text='Save and Quit', command=self.save).grid(row=0, column=4)
+
+        self.color_button = Button(self.root, text='Quit', command=self.quit).grid(row=1, column=4)
 
         self.setup()
         self.root.mainloop()
@@ -101,9 +104,18 @@ class Paint(object):
         y = self.root.winfo_rooty()
         height = self.root.winfo_height() + y
         width = self.root.winfo_width() + x
-        ImageGrab.grab().crop((x, y+64, width, height-64)).save(str(os.getcwd())+"/Masterpiece.png")
+        ImageGrab.grab().crop((x+3, y+70, width-3, height-64)).save(str(os.getcwd())+"/Masterpiece.png")
         self.root.destroy()
     
+    def save_as(self):
+        x = self.root.winfo_rootx()
+        y = self.root.winfo_rooty()
+        height = self.root.winfo_height() + y
+        width = self.root.winfo_width() + x
+        name = filedialog.asksaveasfile(defaultextension = ".png", filetypes = [("PNG file", "*.png")])
+        self.root.update()
+        ImageGrab.grab().crop((x+3, y+70, width-3, height-64)).save(name.name)
+
     def quit(self):
         self.root.destroy()
 
