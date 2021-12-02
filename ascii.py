@@ -131,7 +131,8 @@ class Paint(object):
         width = self.root.winfo_width() + x
         ImageGrab.grab().crop((x+3, y+70, width-3, height-64)).save(str(os.getcwd())+"/Masterpiece_Unga_bunga_don't_use_this_name.png")
         savename = filedialog.asksaveasfile(defaultextension = ".txt", filetypes = [("TXT file", "*.txt")])
-        self.root.destroy()
+        if savename:
+            self.root.destroy()
     
     def save_as(self):
         x = self.root.winfo_rootx()
@@ -143,10 +144,10 @@ class Paint(object):
         ImageGrab.grab().crop((x+3, y+70, width-3, height-64)).save(name.name)
 
     def own_image(self):
-        global name, convert_bool
-        convert_bool = True
+        global name, convert_bool, savename
         name = filedialog.askopenfilename()
         if name:
+            convert_bool = True
             savename = filedialog.asksaveasfile(defaultextension = ".txt", filetypes = [("TXT file", "*.txt")])
             self.root.destroy()
 
@@ -180,7 +181,7 @@ def main(new_width=100):
         image = Image.open(path)
     except:
         print(path, "is not a valid pathname to an image.")
-    new_image_data = pixels_to_ascii(grayscale(resize_image(image)))
+    new_image_data = pixels_to_ascii(grayscale(resize_image(image,new_width = new_width)))
 
     pixel_count = len(new_image_data)
     ascii_image = "\n".join(new_image_data[i:(i+new_width)] for i in range(0, pixel_count, new_width))
@@ -191,6 +192,6 @@ def main(new_width=100):
         fp.write(ascii_image)
 
 if convert_bool:
-    main()
+    main(200)
     if os.path.exists(str(os.getcwd())+"/Masterpiece_Unga_bunga_don't_use_this_name.png"):
         os.remove(str(os.getcwd())+"/Masterpiece_Unga_bunga_don't_use_this_name.png")
